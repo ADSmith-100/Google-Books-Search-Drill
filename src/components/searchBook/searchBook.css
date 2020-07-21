@@ -1,0 +1,9 @@
+.search_div {
+  text-align: center;
+  background-color: darkgray;
+}
+
+input {
+  margin: 10px;
+  background-color: lightgray;
+}

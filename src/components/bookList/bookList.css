@@ -1,0 +1,8 @@
+.book_list {
+  text-align: center;
+}
+
+.books {
+  list-style: none;
+  display: inline-block;
+}
