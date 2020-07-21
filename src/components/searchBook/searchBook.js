@@ -5,9 +5,15 @@ class SearchBook extends Component {
   render() {
     return (
       <div className="search_div">
-        <form>
+        <form onSubmit={(e) => this.props.handleSubmit(e)}>
           <label>Search:</label>
-          <input className="search" type="text" />
+          <input
+            className="search"
+            type="text"
+            value={this.props.searchTerm}
+            onChange={(e) => this.props.handleUpdate(e.target.value)}
+          />
+          <input type="submit" className="search" />
         </form>
       </div>
     );

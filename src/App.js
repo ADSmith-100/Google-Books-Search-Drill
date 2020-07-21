@@ -1,24 +1,50 @@
 import React, { Component } from "react";
 import "./App.css";
-import SearchBook from "./components/searchBook/searchBook.js";
-import SortBook from "./components/sortBook/sortBook.js";
+import SearchBar from "./components/searchBook/searchBook.js";
+import SortBook from "./components/sortBook/sortBook";
 import BookList from "./components/bookList/bookList";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      searchTerm: "ghosts",
+      filterOption: "full",
       books: [],
+      error: null,
+      printType: "all",
     };
   }
 
-  componentDidMount() {
+  handleType = (type) => {
+    this.setState({
+      printType: type,
+    });
+  };
+
+  handleFilter = (filter) => {
+    this.setState({
+      filterOption: filter,
+    });
+  };
+
+  updateSearchTerm = (term) => {
+    this.setState({
+      searchTerm: term,
+    });
+  };
+
+  runSearch = (e) => {
+    e.preventDefault();
+    console.log(this.state.searchTerm);
     let params = {
-      q: "Henry III",
+      q: this.state.searchTerm,
       maxResults: 5,
       key: "AIzaSyBUK42prIOR_hPyH0kdoJqTm8dq7R1WW6E",
+      filterOption: this.state.filterOption,
+      printType: this.state.printType,
     };
-    let url = `https://www.googleapis.com/books/v1/volumes?q=${params.q}&maxResults=5&key=${params.key}`;
+    let url = `https://www.googleapis.com/books/v1/volumes?q=${params.q}&printType=${params.printType}&filter=${params.filterOption}&maxResults=5&key=${params.key}`;
 
     fetch(url)
       .then((res) => {
@@ -29,8 +55,9 @@ class App extends Component {
       })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         this.setState({
-          books: data,
+          books: data.items,
           error: null,
         });
       })
@@ -39,16 +66,25 @@ class App extends Component {
           error: err.message,
         });
       });
-  }
+  };
 
   render() {
     return (
       <main className="App">
-        <h1 className="banner">Google Books Search for Retards!</h1>
+        <h1 className="banner">Google Books Search</h1>
 
-        <SearchBook />
-        <SortBook />
-        <BookList books={this.state.books} />
+        <SearchBar
+          {...this.state}
+          handleUpdate={this.updateSearchTerm}
+          handleSubmit={this.runSearch}
+        />
+
+        <SortBook
+          {...this.state}
+          handleFilter={this.handleFilter}
+          handleType={this.handleType}
+        />
+        <BookList {...this.state} />
       </main>
     );
   }
